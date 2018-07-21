@@ -14,10 +14,10 @@ export class SimulatorPage {
   private emergencyStatus:boolean = false;
   private simulatorStatus:boolean = false;
   private result = {};
-
+  private allResults = [];
   private dispensers:any;
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, private dispProvider: DispensersProvider, private cooldownProvider:CooldownProvider) {
+  constructor(public navCtrl: NavController, public navParams: NavParams, private dispProvider: DispensersProvider, private coolDownProvider:CooldownProvider) {
   }
 
   ionViewDidEnter() {
@@ -26,6 +26,10 @@ export class SimulatorPage {
 
   ionViewDidLoad(){
     this.simulatorLoop();
+  }
+
+  ionViewWillLeave(){
+    this.simulatorStatus = false; //IF IT'S ON WHEN LEAVES, SIMULATOR NEVES STOPS XC
   }
   
   private getRndInteger(min, max) {
@@ -41,7 +45,7 @@ export class SimulatorPage {
   private substractEmergencyDuration(){
     if(this.emergencyStatus){
         if(this.emergencyDuration > 0){
-            this.emergencyDuration = this.emergencyDuration - 1;
+            this.emergencyDuration--;
         }
         else{
             this.emergencyStatus = false;
@@ -52,22 +56,21 @@ export class SimulatorPage {
   private simulatorLoop(){
     setInterval(()=>{
       if(this.simulatorStatus){
-        if(!this.cooldownProvider.coolDownStatus){
-          let usesArray = [];
+        if(!this.coolDownProvider.coolDownStatus){
+          let chosenDispensers = [];
           let numOfDispensers = this.getRndInteger(1, this.dispensers.length); //# of dispensers that will generate a use
           for(let i = 0; i < numOfDispensers; i++){ //for each dispenser
               let d = this.getRndInteger(1,100); //find which one
               for(let x = 0; x < this.dispensers.length; x++){ //checks out the this.pPriority
                   if(d <= this.dispensers[x].priority){ //if the chosen dispenser is within a dispPriority range
-                      usesArray.push(this.dispensers[x]); //then add it to our aux array
+                      chosenDispensers.push(this.dispensers[x]); //then add it to our aux array
                       d = 101; //removes it by going over the limit of 100% priority
                   }
               } 
           }
-          this.result['dispensers'] = usesArray;
           var chosenKit = [];
           var chosenUser = [];
-          usesArray.forEach(element => {
+          chosenDispensers.forEach(element => {
               let k = this.getRndInteger(1,100);
               let u = this.getRndInteger(1,100);
 
@@ -84,16 +87,25 @@ export class SimulatorPage {
                   }
               });
           });
+
           
+          
+          this.result['dispensers'] = chosenDispensers;
           this.result['kits'] = chosenKit;
           this.result['users'] = chosenUser;
-          console.log(this.result);
-          this.cooldownProvider.startCooldown();
+          this.allResults.push(this.result);
+          console.log(this.allResults)
+          this.coolDownProvider.startCooldown();
         }
 
         this.substractEmergencyDuration();
       }
     }, 1000)
+  }
+
+  //Methods to Modify Simulator
+  resetCoolDown(){
+      this.coolDownProvider.reset();
   }
 
 }
