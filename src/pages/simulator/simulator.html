@@ -1,18 +1,52 @@
-<!--
-  Generated template for the SimulatorPage page.
-
-  See http://ionicframework.com/docs/components/#navigation for more info on
-  Ionic pages and navigation.
--->
 <ion-header>
-
-  <ion-navbar>
-    <ion-title>simulator</ion-title>
-  </ion-navbar>
-
-</ion-header>
+    <ion-navbar color="primary">
+      <button ion-button menuToggle>
+        <ion-icon name="menu"></ion-icon>
+      </button>
+      <ion-title>Simulator</ion-title>
+      <ion-buttons end>
+        <ion-toggle color="secondary" [(ngModel)]="simulatorStatus"></ion-toggle>
+      </ion-buttons>
+    </ion-navbar>
+  </ion-header>
 
 
 <ion-content padding>
-
+  <ion-grid>
+    <ion-row>
+      <ion-col col-12 col-sm-12 col-md-6 col-lg-6 col-xl-6>
+        <ion-list>
+          <ion-list-header>Reset Active Cool Down to Zero
+              <ion-badge item-end>{{coolDownProvider.coolDownDuration}} sec</ion-badge>
+          </ion-list-header>
+          <ion-item>
+            <button ion-button (click)="resetCoolDown()" full>Reset</button>
+          </ion-item>
+          <ion-list-header>Lower Limit and Upper Limit of Cool Down Time</ion-list-header>
+          <ion-item>
+            <ion-label>
+              <ion-badge>{{coolDownProvider.coolDownRange.lower}} sec</ion-badge>
+              <ion-badge>{{coolDownProvider.coolDownRange.upper}} sec</ion-badge>
+            </ion-label>
+            <ion-range dualKnobs="true" pin="true" [(ngModel)]="coolDownProvider.coolDownRange" color="secondary" min="5" max="300">
+              <ion-icon range-left small name="remove"></ion-icon>
+              <ion-icon range-right name="add"></ion-icon>
+            </ion-range>
+          </ion-item>
+          <ion-item>
+            
+          </ion-item>      
+        </ion-list>
+      </ion-col>
+      <ion-col col-12 col-sm-12 col-md-6 col-lg-6 col-xl-6>
+        <ion-list *ngIf="allResults">
+          <ion-item *ngFor="let r of allResults">
+            <ion-row *ngFor="let d of r.dispensers">
+              <ion-col>{{d.dispenserId}}</ion-col>
+            </ion-row>  
+          </ion-item>
+        </ion-list>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
 </ion-content>
