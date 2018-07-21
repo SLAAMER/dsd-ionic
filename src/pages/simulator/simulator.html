@@ -4,15 +4,14 @@
         <ion-icon name="menu"></ion-icon>
       </button>
       <ion-title>Simulator</ion-title>
+      <ion-buttons end>
+        
+        <ion-toggle color="secondary" [(ngModel)]="simulatorStatus"></ion-toggle>
+      </ion-buttons>
     </ion-navbar>
   </ion-header>
 
 
 <ion-content padding>
-  <ion-item no-lines>
-    <button ion-button full (click)="switchState()">Turn
-      <div *ngIf="simulatorStatus"> Off</div>
-      <div *ngIf="!simulatorStatus"> On</div>
-    </button>
-  </ion-item>
+  
 </ion-content>

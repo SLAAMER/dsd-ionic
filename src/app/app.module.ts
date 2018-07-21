@@ -10,6 +10,7 @@ import { SplashScreen } from '@ionic-native/splash-screen';
 import { DispensersProvider } from '../providers/dispensers/dispensers';
 import { CooldownProvider } from '../providers/cooldown/cooldown';
 import { ScheduleProvider } from '../providers/schedule/schedule';
+import { ToastProvider } from '../providers/toast/toast';
 
 @NgModule({
   declarations: [
@@ -31,6 +32,7 @@ import { ScheduleProvider } from '../providers/schedule/schedule';
     DispensersProvider,
     CooldownProvider,
     ScheduleProvider,
+    ToastProvider,
   ]
 })
 export class AppModule {}

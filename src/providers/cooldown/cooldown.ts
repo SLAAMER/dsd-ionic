@@ -1,16 +1,20 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { ScheduleProvider } from '../schedule/schedule';
+import { ToastProvider } from '../toast/toast';
+import { Toast } from 'ionic-angular';
 
 @Injectable()
 export class CooldownProvider {
 
-  private coolDownDuration:number;
   public coolDownStatus:boolean = false;
+  private coolDownDuration:number = NaN;
   private coolDownMinimumDuration:number;
   private coolDownMaximumDuration:number;
+  private toast:Toast;
 
-  constructor(public http: HttpClient, private scheduleProvider: ScheduleProvider) {
+  constructor(public http: HttpClient, private scheduleProvider: ScheduleProvider, private toastPrvd: ToastProvider) {
+    this.subtractLoop();
   }
 
   private getRndInteger(min, max) {
@@ -21,12 +25,12 @@ export class CooldownProvider {
     if(this.coolDownStatus){
         if(this.coolDownDuration > 0){
             this.coolDownDuration = this.coolDownDuration - 1;
+            if(this.toast) this.toast.setMessage('Cool down: ' + this.coolDownDuration + ' seconds remaining');
         }
         else{
             this.coolDownStatus = false;
         }
     }
-    console.log(this.coolDownDuration);
   }
 
   public startCooldown(){
@@ -53,6 +57,17 @@ export class CooldownProvider {
         break;
     }
     this.coolDownDuration = this.getRndInteger(this.coolDownMinimumDuration, this.coolDownMaximumDuration); //# of seconds for cooldown
+    this.presentToast('Cool down: ' + this.coolDownDuration + ' seconds remaining', this.coolDownDuration);
+  }
+
+  private subtractLoop(){
+      setInterval(()=>{
+          this.substractCoolDownDuration();
+      },1000);
+  }
+
+  private presentToast(message:string, duration:number){
+      this.toast = this.toastPrvd.presentToast(message, duration);
   }
 
 }

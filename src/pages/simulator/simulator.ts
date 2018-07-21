@@ -27,10 +27,6 @@ export class SimulatorPage {
   ionViewDidLoad(){
     this.simulatorLoop();
   }
-
-  private switchState(){
-    this.simulatorStatus = !this.simulatorStatus;
-  }
   
   private getRndInteger(min, max) {
     return Math.floor(Math.random() * (max - min + 1) ) + min;
@@ -91,13 +87,11 @@ export class SimulatorPage {
           
           this.result['kits'] = chosenKit;
           this.result['users'] = chosenUser;
-
+          console.log(this.result);
           this.cooldownProvider.startCooldown();
-          console.log(this.result)
         }
 
         this.substractEmergencyDuration();
-        this.cooldownProvider.substractCoolDownDuration();
       }
     }, 1000)
   }
