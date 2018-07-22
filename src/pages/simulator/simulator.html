@@ -11,7 +11,7 @@
   </ion-header>
 
 
-<ion-content padding>
+<ion-content>
   <ion-grid>
     <ion-row>
       <ion-col col-12 col-sm-12 col-md-6 col-lg-6 col-xl-6>
@@ -39,13 +39,12 @@
         </ion-list>
       </ion-col>
       <ion-col col-12 col-sm-12 col-md-6 col-lg-6 col-xl-6>
-        <ion-list *ngIf="allResults">
-          <ion-item *ngFor="let r of allResults">
-            <ion-row *ngFor="let d of r.dispensers">
-              <ion-col>{{d.dispenserId}}</ion-col>
-            </ion-row>  
-          </ion-item>
-        </ion-list>
+        <div *ngIf="allResults">
+          <ion-row class="row-header"><ion-col>Dispenser</ion-col><ion-col>Kit</ion-col><ion-col>User</ion-col></ion-row>
+          <ion-row *ngFor="let r of allResults" class="row-center">
+            <ion-col>{{r.dispenserId}}</ion-col><ion-col>{{r.kitId}}</ion-col><ion-col>{{r.userId}}</ion-col>
+          </ion-row>
+        </div>
       </ion-col>
     </ion-row>
   </ion-grid>

@@ -36,11 +36,11 @@ export class SimulatorPage {
     return Math.floor(Math.random() * (max - min + 1) ) + min;
   }
 
-  private weekDay(){
+  /*private weekDay(){
     var weekDays = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
     var current = new Date().getDay();
     return weekDays[current];
-  }
+  }*/
 
   private substractEmergencyDuration(){
     if(this.emergencyStatus){
@@ -58,43 +58,45 @@ export class SimulatorPage {
       if(this.simulatorStatus){
         if(!this.coolDownProvider.coolDownStatus){
           let chosenDispensers = [];
+          var chosenKit = [];
+          var chosenUser = [];
           let numOfDispensers = this.getRndInteger(1, this.dispensers.length); //# of dispensers that will generate a use
+
           for(let i = 0; i < numOfDispensers; i++){ //for each dispenser
               let d = this.getRndInteger(1,100); //find which one
-              for(let x = 0; x < this.dispensers.length; x++){ //checks out the this.pPriority
-                  if(d <= this.dispensers[x].priority){ //if the chosen dispenser is within a dispPriority range
+              for(let x = 0; x < this.dispensers.length; x++){ //checks out the dispensers' probability
+                  if(d <= this.dispensers[x].probability){ //if the chosen dispenser is within a dispenser probability range
                       chosenDispensers.push(this.dispensers[x]); //then add it to our aux array
-                      d = 101; //removes it by going over the limit of 100% priority
+                      d = 101; //removes it by going over the limit of 100% probability
                   }
               } 
           }
-          var chosenKit = [];
-          var chosenUser = [];
           chosenDispensers.forEach(element => {
               let k = this.getRndInteger(1,100);
               let u = this.getRndInteger(1,100);
 
               element.kits.forEach(kit =>{
-                  if(k <= kit.priority){
+                  if(k <= kit.probability){
                       chosenKit.push(kit);
                       k = 101; 
                   }
               });
               element.users.forEach(user =>{
-                  if(u <= user.priority){
+                  if(u <= user.probability){
                       chosenUser.push(user);
                       u = 101; 
                   }
               });
           });
 
-          
-          
-          this.result['dispensers'] = chosenDispensers;
-          this.result['kits'] = chosenKit;
-          this.result['users'] = chosenUser;
-          this.allResults.push(this.result);
-          console.log(this.allResults)
+          for(let i = 0; i < chosenDispensers.length; i++){
+            let obj = {
+              "dispenserId" : chosenDispensers[i].dispenserId,
+              "kitId" : chosenKit[i].kitId,
+              "userId" : chosenUser[i].userId
+            }
+            this.allResults.push(obj);
+          }
           this.coolDownProvider.startCooldown();
         }
 
