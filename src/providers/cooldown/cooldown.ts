@@ -8,9 +8,9 @@ export class CooldownProvider {
 
   public coolDownStatus:boolean = false;
   public coolDownDuration:number = 0;
-  private coolDownRange = {
-    lower:10,
-    upper:90
+  private coolDownRange:{ lower:number, upper:number} = {
+    lower:0,
+    upper:0
   };
   private toast:Toast;
 
@@ -50,13 +50,9 @@ export class CooldownProvider {
         break;
         case this.scheduleProvider.Normal:
             this.coolDownRange.lower = 20;
-            this.coolDownRange.upper = 30;
+            this.coolDownRange.upper = 40;
         break;
         case this.scheduleProvider.Slow:
-            this.coolDownRange.lower = 60;
-            this.coolDownRange.upper = 120;
-        break;
-        default:
             this.coolDownRange.lower = 60;
             this.coolDownRange.upper = 120;
         break;

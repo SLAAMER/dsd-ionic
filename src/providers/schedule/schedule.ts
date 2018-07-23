@@ -1,17 +1,16 @@
-import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import isWithinRange from 'date-fns/is_within_range';
 
 @Injectable()
 export class ScheduleProvider {
   
-  public Rush:0;
-  public Normal:1;
-  public Slow:2;
+  public Rush:number = 0;
+  public Normal:number = 1;
+  public Slow:number = 2;
 
   private currentType:number;
 
-  constructor(private http: HttpClient) {
+  constructor() {
   }
 
   getCurrentType():number{
