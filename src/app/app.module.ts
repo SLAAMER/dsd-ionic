@@ -11,6 +11,19 @@ import { DispensersProvider } from '../providers/dispensers/dispensers';
 import { CooldownProvider } from '../providers/cooldown/cooldown';
 import { ScheduleProvider } from '../providers/schedule/schedule';
 import { ToastProvider } from '../providers/toast/toast';
+import { MqttProvider } from '../providers/mqtt/mqtt';
+
+import { MqttModule, MqttService, IMqttServiceOptions } from 'ngx-mqtt';
+
+export const MQTT_SERVICE_OPTIONS: IMqttServiceOptions = {
+  hostname: 'broker.hivemq.com',
+  port: 8000,
+  path: '/mqtt'
+};
+
+export function mqttServiceFactory() {
+  return new MqttService(MQTT_SERVICE_OPTIONS);
+}
 
 @NgModule({
   declarations: [
@@ -20,6 +33,10 @@ import { ToastProvider } from '../providers/toast/toast';
     BrowserModule,
     IonicModule.forRoot(MyApp),
     HttpClientModule,
+    MqttModule.forRoot({
+      provide: MqttService,
+      useFactory: mqttServiceFactory
+    }),
   ],
   bootstrap: [IonicApp],
   entryComponents: [
@@ -28,11 +45,12 @@ import { ToastProvider } from '../providers/toast/toast';
   providers: [
     StatusBar,
     SplashScreen,
-    {provide: ErrorHandler, useClass: IonicErrorHandler},
+    { provide: ErrorHandler, useClass: IonicErrorHandler },
     DispensersProvider,
     CooldownProvider,
     ScheduleProvider,
     ToastProvider,
+    MqttProvider,
   ]
 })
-export class AppModule {}
+export class AppModule { }

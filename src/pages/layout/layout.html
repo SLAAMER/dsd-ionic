@@ -1,0 +1,21 @@
+<ion-header>
+
+  <ion-navbar color="primary">
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title>Layout</ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content padding>
+  <ion-item>
+    <ion-label floating>Message</ion-label>
+    <ion-input [(ngModel)]="message"></ion-input>
+  </ion-item>
+  <ion-item>
+    <button ion-button (click)="publish()">Publish</button>
+  </ion-item>
+</ion-content>
