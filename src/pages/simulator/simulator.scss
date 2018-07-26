@@ -8,4 +8,10 @@ page-simulator {
     .row-center{
         text-align: center;
     }
+
+    .limit-height{
+        max-height: 580px;
+        overflow-x: hidden;
+        overflow-y: scroll;
+    }
 }
