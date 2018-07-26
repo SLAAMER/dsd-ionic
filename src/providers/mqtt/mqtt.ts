@@ -1,12 +1,22 @@
 import { Injectable } from '@angular/core';
-import { IMqttMessage, MqttService } from 'ngx-mqtt';
+import { IMqttMessage, MqttService, IMqttServiceOptions } from 'ngx-mqtt';
 
 @Injectable()
 export class MqttProvider {
 
-  private topic:string = "/world"
+  private options: IMqttServiceOptions = {
+    hostname: 'm13.cloudmqtt.com',
+    port: 33700,
+    path: '/',
+    username: 'iurigkzv',
+    password: 'ywgljptjPEAp',
+    protocol: 'wss'
+  };
+
+  private topic:string = "/DSD/dispenser/tests";
 
   constructor(private mqttService:MqttService) {
+    this.mqttService = new MqttService(this.options);
     this.subscribe();
   }
 

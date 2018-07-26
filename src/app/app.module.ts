@@ -1,7 +1,8 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { ErrorHandler, NgModule } from '@angular/core';
 import { IonicApp, IonicErrorHandler, IonicModule } from 'ionic-angular';
-import { HttpClientModule } from '@angular/common/http'
+import { HttpClientModule } from '@angular/common/http';
+import { MqttModule, MqttService } from 'ngx-mqtt';
 
 import { MyApp } from './app.component';
 
@@ -13,18 +14,6 @@ import { ScheduleProvider } from '../providers/schedule/schedule';
 import { ToastProvider } from '../providers/toast/toast';
 import { MqttProvider } from '../providers/mqtt/mqtt';
 
-import { MqttModule, MqttService, IMqttServiceOptions } from 'ngx-mqtt';
-
-export const MQTT_SERVICE_OPTIONS: IMqttServiceOptions = {
-  hostname: 'broker.hivemq.com',
-  port: 8000,
-  path: '/mqtt'
-};
-
-export function mqttServiceFactory() {
-  return new MqttService(MQTT_SERVICE_OPTIONS);
-}
-
 @NgModule({
   declarations: [
     MyApp,
@@ -34,8 +23,7 @@ export function mqttServiceFactory() {
     IonicModule.forRoot(MyApp),
     HttpClientModule,
     MqttModule.forRoot({
-      provide: MqttService,
-      useFactory: mqttServiceFactory
+      provide: MqttService
     }),
   ],
   bootstrap: [IonicApp],
