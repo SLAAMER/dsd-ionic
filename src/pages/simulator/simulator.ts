@@ -22,6 +22,7 @@ export class SimulatorPage {
 
   ionViewDidEnter() {
     this.dispensers = this.dispProvider.getDispensers();
+    this.style();
   }
 
   ionViewDidLoad(){
@@ -30,6 +31,10 @@ export class SimulatorPage {
 
   ionViewWillLeave(){
     this.simulatorStatus = false; //IF IT'S ON WHEN LEAVES, SIMULATOR NEVES STOPS XC
+  }
+
+  style(){
+    document.getElementById('output').style.maxHeight = document.getElementById('main').style.height;
   }
   
   private getRndInteger(min, max) {
