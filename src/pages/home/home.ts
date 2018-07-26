@@ -21,12 +21,6 @@ export class HomePage {
     this.loadSplineChart();
     this.loadLineChart();
     this.loadGaugeChart();
-
-    this.style();
-  }
-
-  style(){
-    document.getElementById('output').style.maxHeight = document.getElementById('main').style.height;
   }
 
   loadSplineChart(){
