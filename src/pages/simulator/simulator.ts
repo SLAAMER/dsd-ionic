@@ -10,14 +10,17 @@ import { CooldownProvider } from '../../providers/cooldown/cooldown';
 })
 export class SimulatorPage {
 
-  private emergencyDuration:number;
-  private emergencyStatus:boolean = false;
-  private simulatorStatus:boolean = false;
+  private emergencyDuration: number;
+  private emergencyStatus: boolean = false;
+  private simulatorStatus: boolean = false;
   private result = {};
   private allResults = [];
-  private dispensers:any;
+  private dispensers: any;
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, private dispProvider: DispensersProvider, private coolDownProvider:CooldownProvider) {
+  private buttonDisabled: boolean = false;
+  private simulatorContent: string = "simulator";
+
+  constructor(public navCtrl: NavController, public navParams: NavParams, private dispProvider: DispensersProvider, private coolDownProvider: CooldownProvider) {
   }
 
   ionViewDidEnter() {
@@ -25,80 +28,74 @@ export class SimulatorPage {
     this.style();
   }
 
-  ionViewDidLoad(){
+  ionViewDidLoad() {
     this.simulatorLoop();
   }
 
-  ionViewWillLeave(){
+  ionViewWillLeave() {
     this.simulatorStatus = false; //IF IT'S ON WHEN LEAVES, SIMULATOR NEVES STOPS XC
   }
 
-  style(){
+  style() {
     document.getElementById('output').style.maxHeight = document.getElementById('main').style.height;
   }
-  
+
   private getRndInteger(min, max) {
-    return Math.floor(Math.random() * (max - min + 1) ) + min;
+    return Math.floor(Math.random() * (max - min + 1)) + min;
   }
 
-  /*private weekDay(){
-    var weekDays = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
-    var current = new Date().getDay();
-    return weekDays[current];
-  }*/
-
-  private substractEmergencyDuration(){
-    if(this.emergencyStatus){
-        if(this.emergencyDuration > 0){
-            this.emergencyDuration--;
-        }
-        else{
-            this.emergencyStatus = false;
-        }
+  private substractEmergencyDuration() {
+    if (this.emergencyStatus) {
+      if (this.emergencyDuration > 0) {
+        this.emergencyDuration--;
+      }
+      else {
+        this.emergencyStatus = false;
+      }
     }
   }
 
-  private simulatorLoop(){
-    setInterval(()=>{
-      if(this.simulatorStatus){
-        if(!this.coolDownProvider.coolDownStatus){
+  private simulatorLoop() {
+    setInterval(() => {
+      if (this.simulatorStatus) {
+        if (!this.coolDownProvider.coolDownStatus) {
           let chosenDispensers = [];
           var chosenKit = [];
           var chosenUser = [];
           let numOfDispensers = this.getRndInteger(1, this.dispensers.length); //# of dispensers that will generate a use
 
-          for(let i = 0; i < numOfDispensers; i++){ //for each dispenser
-              let d = this.getRndInteger(1,100); //find which one
-              for(let x = 0; x < this.dispensers.length; x++){ //checks out the dispensers' probability
-                  if(d <= this.dispensers[x].probability){ //if the chosen dispenser is within a dispenser probability range
-                      chosenDispensers.push(this.dispensers[x]); //then add it to our aux array
-                      d = 101; //removes it by going over the limit of 100% probability
-                  }
-              } 
+          for (let i = 0; i < numOfDispensers; i++) { //for each dispenser
+            let d = this.getRndInteger(1, 100); //find which one
+            for (let x = 0; x < this.dispensers.length; x++) { //checks out the dispensers' probability
+              if (d <= this.dispensers[x].probability) { //if the chosen dispenser is within a dispenser probability range
+                chosenDispensers.push(this.dispensers[x]); //then add it to our aux array
+                d = 101; //removes it by going over the limit of 100% probability
+              }
+            }
           }
           chosenDispensers.forEach(element => {
-              let k = this.getRndInteger(1,100);
-              let u = this.getRndInteger(1,100);
+            let k = this.getRndInteger(1, 100);
+            let u = this.getRndInteger(1, 100);
 
-              element.kits.forEach(kit =>{
-                  if(k <= kit.probability){
-                      chosenKit.push(kit);
-                      k = 101; 
-                  }
-              });
-              element.users.forEach(user =>{
-                  if(u <= user.probability){
-                      chosenUser.push(user);
-                      u = 101; 
-                  }
-              });
+            element.kits.forEach(kit => {
+              if (k <= kit.probability) {
+                chosenKit.push(kit);
+                k = 101;
+              }
+            });
+            element.users.forEach(user => {
+              if (u <= user.probability) {
+                chosenUser.push(user);
+                u = 101;
+              }
+            });
           });
 
-          for(let i = 0; i < chosenDispensers.length; i++){
+          for (let i = 0; i < chosenDispensers.length; i++) {
             let obj = {
-              "dispenserId" : chosenDispensers[i].dispenserId,
-              "kitId" : chosenKit[i].kitId,
-              "userId" : chosenUser[i].userId
+              "dispenserId": chosenDispensers[i].dispenserId,
+              "kitId": chosenKit[i].kitId,
+              "userId": chosenUser[i].userId
             }
             this.allResults.push(obj);
           }
