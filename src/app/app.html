@@ -1,14 +1,20 @@
 <ion-menu [content]="content" type="reveal">
   <ion-header>
-    <ion-toolbar color="primary">
-      <ion-title center>DSD</ion-title>
-    </ion-toolbar>
+    <div style="height:127px; background-image: url('../../assets/imgs/material.jpg'); background-size: 100%;">
+      <img src="../../assets/imgs/dsd-logo.png" style="margin-left:12px; margin-top:22px; height: 45px; width:45px; border-radius: 50%;">
+      <p style="margin-left:12px; opacity: .9; color: white;">ejemple.correo.rs@gmail.com</p>
+    </div>
   </ion-header>
 
-  <ion-content>
-    <ion-list>
-      <button menuClose ion-item *ngFor="let p of pages" (click)="openPage(p)">
+  <ion-content style="background-color: white !important;">
+    <ion-list no-lines>
+      <button menuClose ion-item *ngFor="let p of pages" (click)="openPage(p)" [class.activeHighlight]="checkActivePage(p)">
+        <ion-icon *ngIf="p.icon" [name]="p.icon" color="primary" item-start></ion-icon>
         {{p.title}}
+      </button>
+      <button menuClose ion-item (click)="logout()">
+        Log out
+        <ion-icon name="log-out" color="primary" item-start></ion-icon>
       </button>
     </ion-list>
   </ion-content>
