@@ -111,8 +111,12 @@ export class SimulatorPage {
   }
 
   //Methods to Modify Simulator
-  resetCoolDown(){
+  resetCoolDown() {
+    this.buttonDisabled = true;
+    setTimeout(() => {
       this.coolDownProvider.reset();
+      this.buttonDisabled = false;
+    }, 500)
   }
 
 }
