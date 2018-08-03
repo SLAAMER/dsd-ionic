@@ -1,7 +1,8 @@
 import { Component, ViewChild } from '@angular/core';
-import { Nav, Platform } from 'ionic-angular';
+import { Nav, Platform, Events } from 'ionic-angular';
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
+import { SessionProvider } from '../providers/session/session';
 
 @Component({
   templateUrl: 'app.html'
@@ -9,11 +10,13 @@ import { SplashScreen } from '@ionic-native/splash-screen';
 export class MyApp {
   @ViewChild(Nav) nav: Nav;
 
-  rootPage: any = 'LoginPage';
+  rootPage: any;
   activePage: any;
   pages: Array<{title: string, component: string, icon?:string}>;
 
-  constructor(public platform: Platform, public statusBar: StatusBar, public splashScreen: SplashScreen) {
+  email:string;
+
+  constructor(public platform: Platform, public statusBar: StatusBar, public splashScreen: SplashScreen, private event: Events, private session: SessionProvider) {
     this.initializeApp();
 
     // used for an example of ngFor and navigation
@@ -25,13 +28,28 @@ export class MyApp {
 
     this.activePage = this.pages[0];
 
+    this.event.subscribe('highlight', ()=>{
+      this.activePage = this.pages[0];
+    });
+
+    this.event.subscribe('session', (session)=>{
+      this.email = session;
+    });
   }
 
   initializeApp() {
     this.platform.ready().then(() => {
       // Okay, so the platform is ready and our plugins are available.
-      // Here you can do any higher level native things you might need.
       this.statusBar.styleDefault();
+      this.session.getSession().then((session)=>{
+        if(session){
+          this.email = session;
+          this.rootPage = "HomePage";
+        }
+        else{
+          this.rootPage = "LoginPage";
+        }
+      });
       this.splashScreen.hide();
     });
   }
@@ -48,6 +66,8 @@ export class MyApp {
   }
 
   logout(){
-    this.nav.setRoot('LoginPage');
+    this.session.endSession().then(()=>{
+      this.nav.setRoot('LoginPage');
+    });
   }
 }
