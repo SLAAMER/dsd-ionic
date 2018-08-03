@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { NavController, IonicPage } from 'ionic-angular';
 import { bb } from 'billboard.js';
  
@@ -8,6 +8,10 @@ import { bb } from 'billboard.js';
   templateUrl: 'home.html'
 })
 export class HomePage {
+
+  @ViewChild('SplineChart') domSpline;
+  @ViewChild('LineChart') domLine;
+  @ViewChild('GaugeChart') domGauge;
 
   splineChart:any;
   lineChart:any;
@@ -35,7 +39,7 @@ export class HomePage {
       legend:{
         position: "right"
       },
-      bindto: "#SplineChart"
+      bindto: this.domSpline.nativeElement
     });
 
     this.updateSplineChartData();
@@ -58,7 +62,7 @@ export class HomePage {
       legend:{
         position: "right"
       },
-      bindto: "#LineChart"
+      bindto: this.domLine.nativeElement
     });
   }
 
@@ -90,7 +94,7 @@ export class HomePage {
       size: {
         height: 180
       },
-      bindto: "#GaugeChart"
+      bindto: this.domGauge.nativeElement
     });
 
     this.updateGaugeChartData();
