@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
 import { DispensersProvider } from '../../providers/dispensers/dispensers';
 import { CooldownProvider } from '../../providers/cooldown/cooldown';
+import { SimulatorProvider } from '../../providers/simulator/simulator';
 
 @IonicPage()
 @Component({
@@ -13,19 +14,17 @@ export class SimulatorPage {
   private emergencyDuration: number;
   private emergencyStatus: boolean = false;
   private simulatorStatus: boolean = false;
-  private result = {};
-  private allResults = [];
   private dispensers: any;
 
   private buttonDisabled: boolean = false;
   private simulatorContent: string = "simulator";
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, private dispProvider: DispensersProvider, private coolDownProvider: CooldownProvider) {
+  constructor(public navCtrl: NavController, public navParams: NavParams, private dispProvider: DispensersProvider, 
+    private coolDownProvider: CooldownProvider, private simulatorProvider: SimulatorProvider) {
   }
 
   ionViewDidEnter() {
     this.dispensers = this.dispProvider.getDispensers();
-    this.style();
   }
 
   ionViewDidLoad() {
@@ -34,10 +33,6 @@ export class SimulatorPage {
 
   ionViewWillLeave() {
     this.simulatorStatus = false; //IF IT'S ON WHEN LEAVES, SIMULATOR NEVES STOPS XC
-  }
-
-  style() {
-    document.getElementById('output').style.maxHeight = document.getElementById('main').style.height;
   }
 
   private getRndInteger(min, max) {
@@ -97,12 +92,12 @@ export class SimulatorPage {
               "kitId": chosenKit[i].kitId,
               "userId": chosenUser[i].userId
             }
-            this.allResults.push(obj);
+            this.simulatorProvider.add(obj);
           }
           this.coolDownProvider.startCooldown();
         }
 
-        this.substractEmergencyDuration();
+        //this.substractEmergencyDuration();
       }
     }, 1000)
   }

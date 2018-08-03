@@ -44,12 +44,16 @@
               <ion-icon range-right name="add"></ion-icon>
             </ion-range>
           </ion-item>
+          <ion-item>
+            <ion-label>Emergency Switch</ion-label>
+            <ion-toggle [(ngModel)]="emergencyStatus" color="danger"></ion-toggle>
+          </ion-item>
         </ion-list>
       </ion-col>
       <ion-col col-12 col-sm-12 col-md-6 col-lg-6 col-xl-6>
         <ion-row class="row-header"><ion-col>Dispenser</ion-col><ion-col>Kit</ion-col><ion-col>User</ion-col></ion-row>
-        <ion-list id="output" *ngIf="allResults" [virtualScroll]="allResults" approxItemHeight="40px" class="limit-height"> 
-          <ion-item *virtualItem="let r" class="row-center">
+        <ion-list *ngIf="simulatorProvider.results" class="limit-height"> 
+          <ion-item *ngFor="let r of simulatorProvider.results" class="row-center">
             <ion-row><ion-col>{{r.dispenserId}}</ion-col><ion-col>{{r.kitId}}</ion-col><ion-col>{{r.userId}}</ion-col></ion-row>
           </ion-item>
         </ion-list>

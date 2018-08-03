@@ -15,6 +15,7 @@ import { ScheduleProvider } from '../providers/schedule/schedule';
 import { ToastProvider } from '../providers/toast/toast';
 import { MqttProvider } from '../providers/mqtt/mqtt';
 import { SessionProvider } from '../providers/session/session';
+import { SimulatorProvider } from '../providers/simulator/simulator';
 
 @NgModule({
   declarations: [
@@ -43,6 +44,7 @@ import { SessionProvider } from '../providers/session/session';
     ToastProvider,
     MqttProvider,
     SessionProvider,
+    SimulatorProvider,
   ]
 })
 export class AppModule { }
