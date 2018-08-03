@@ -1,0 +1,9 @@
+page-login {
+    .scroll-content {
+        background-color: map-get($colors, light);
+    }
+
+    ion-card{
+        border-radius: .5em !important;
+    }
+}

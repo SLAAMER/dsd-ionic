@@ -12,6 +12,7 @@ export class MyApp {
   rootPage: any = 'HomePage';
 
   pages: Array<{title: string, component: string}>;
+  rootPage: any = 'LoginPage';
 
   constructor(public platform: Platform, public statusBar: StatusBar, public splashScreen: SplashScreen) {
     this.initializeApp();
