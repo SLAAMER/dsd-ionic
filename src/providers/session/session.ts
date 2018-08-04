@@ -5,23 +5,18 @@ import { Storage } from '@ionic/storage';
 @Injectable()
 export class SessionProvider {
 
-  private postAPI: string = '';
+  private postAPI: string = 'https://dsd-api.herokuapp.com/api/user/login';
 
   constructor(private http: HttpClient, private storage: Storage) {
 
   }
 
-  auth(email: string, password: string): Promise<any>{
-    let httpOptions = {
-      headers: new HttpHeaders({
-        '':''
-      })
-    };
+  auth(email: string, password: string): Promise<any> {
     let body = {
-      'email':email,
-      'password':password
+      'email': email,
+      'password': password
     };
-    return this.http.post(this.postAPI, body, httpOptions).toPromise();
+    return this.http.post(this.postAPI, body).toPromise();
   }
 
   getSession(): Promise<any> {

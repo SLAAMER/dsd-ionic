@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams, MenuController, Events } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, MenuController, Events, LoadingController } from 'ionic-angular';
 import { SessionProvider } from '../../providers/session/session';
+import { ToastProvider } from '../../providers/toast/toast';
 
 @IonicPage()
 @Component({
@@ -12,7 +13,8 @@ export class LoginPage {
   private email:string;
   private password:string;
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, private menuCtrl: MenuController, private session: SessionProvider, private event: Events) {
+  constructor(public navCtrl: NavController, public navParams: NavParams, private menuCtrl: MenuController, 
+    private session: SessionProvider, private event: Events, private toast: ToastProvider, private loadingCtrl: LoadingController) {
   }
 
   ionViewWillEnter(){
@@ -24,19 +26,24 @@ export class LoginPage {
   }
 
   validate(){
-    /*if(this.credentialsNotNull()){
-      this.session.auth(this.email, this.password).then((res)=>{
-        this.session.saveSession(res.email).then(()=>{
-          this.event.publish('session', res.email);
-          this.goHome();
+    if(this.credentialsNotNull()){
+      let loader = this.loadingCtrl.create({spinner:'crescent'});
+      loader.present().then(()=>{
+        this.session.auth(this.email, this.password).then((res)=>{
+          this.session.saveSession(this.email).then(()=>{
+            this.event.publish('session', this.email);
+            this.goHome(loader);
+          }).catch((ex)=>{
+            console.log(ex);
+            loader.dismiss();
+            this.toast.presentToast("Login failure");
+          });
+        }).catch((ex)=>{
+          loader.dismiss();
+          this.toast.presentToast(ex.error.email || ex.error.password || "Network failure");
         });
       });
-    }*/
-    if(this.credentialsNotNull()){
-      this.session.saveSession(this.email).then(()=>{
-        this.event.publish('session', this.email);
-        this.goHome();
-      });
+      
     }
   }
 
@@ -45,7 +52,8 @@ export class LoginPage {
     else return true;
   }
 
-  goHome(){
+  goHome(loader){
+    loader.dismiss();
     this.navCtrl.setRoot('HomePage');
     this.event.publish('highlight');
   }
