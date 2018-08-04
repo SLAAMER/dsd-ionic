@@ -94,7 +94,7 @@ export class SimulatorPage {
             }
             this.simulatorProvider.add(obj);
           }
-          this.coolDownProvider.startCooldown();
+          this.coolDownProvider.startCooldown(this.emergencyStatus);
         }
 
         //this.substractEmergencyDuration();
