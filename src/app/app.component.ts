@@ -33,7 +33,8 @@ export class MyApp {
     });
 
     this.event.subscribe('session', (session)=>{
-      this.email = session;
+      console.log(session)
+      this.email = session.email;
     });
   }
 
@@ -43,7 +44,7 @@ export class MyApp {
       this.statusBar.styleDefault();
       this.session.getSession().then((session)=>{
         if(session){
-          this.email = session;
+          this.email = session.email;
           this.rootPage = "HomePage";
         }
         else{

@@ -13,21 +13,53 @@
       <ion-col>
         <ion-card>
           <ion-card-header>Placeholder</ion-card-header>
-          <ion-card-content><div #SplineChart></div></ion-card-content>
+          <ion-card-content>
+            <div #SplineChart></div>
+          </ion-card-content>
         </ion-card>
-      </ion-col>  
+      </ion-col>
     </ion-row>
     <ion-row>
-      <ion-col col-12 col-sm-12 col-md-6 col-lg-6 col-xl-6>
+      <!-- <ion-col col-12 col-sm-12 col-md-6 col-lg-6 col-xl-6>
         <ion-card>
           <ion-card-header>Placeholder</ion-card-header>
           <ion-card-content><div #LineChart></div></ion-card-content>
         </ion-card>
-      </ion-col>
-      <ion-col col-12 col-sm-12 col-md-6 col-lg-6 col-xl-6>
+      </ion-col> -->
+
+      <ion-col>
         <ion-card>
-          <ion-card-header>Placeholder</ion-card-header>
-          <ion-card-content><div #GaugeChart></div></ion-card-content>
+          <ion-card-header>
+            <ion-item>
+              <ion-label>Choose a Dispenser</ion-label>
+              <ion-select [(ngModel)]="dispenserId" (ionChange)="valueChange()">
+                <ion-option *ngFor="let d of dispensers" [value]="d._id">{{d.name}}</ion-option>
+              </ion-select>
+            </ion-item>
+          </ion-card-header>
+          <ion-card-content>
+            <ion-grid>
+              <ion-row *ngIf="dispenserName">
+                <ion-col style="text-align: right;">Dispensador {{dispenserName}}</ion-col>
+              </ion-row>
+              <ion-row *ngIf="racks.racks">
+                <ion-col *ngFor="let k of racks.racks" col-12 col-sm-12 col-md-4 col-lg-4 col-xl-4 style="text-align: center;">
+                  {{k.kit.name}}
+                </ion-col>
+              </ion-row>
+              <ion-row>
+                <ion-col col-12 col-sm-12 col-md-4 col-lg-4 col-xl-4>
+                  <div #GaugeChart1></div>
+                </ion-col>
+                <ion-col col-12 col-sm-12 col-md-4 col-lg-4 col-xl-4>
+                  <div #GaugeChart2></div>
+                </ion-col>
+                <ion-col col-12 col-sm-12 col-md-4 col-lg-4 col-xl-4>
+                  <div #GaugeChart3></div>
+                </ion-col>
+              </ion-row>
+            </ion-grid>
+          </ion-card-content>
         </ion-card>
       </ion-col>
     </ion-row>
