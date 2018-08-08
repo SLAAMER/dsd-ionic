@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
-import { MqttProvider } from '../../providers/mqtt/mqtt'
+import { IonicPage, NavController, NavParams, ModalController } from 'ionic-angular';
+import { DispensersProvider } from '../../providers/dispensers/dispensers';
 
 @IonicPage()
 @Component({
@@ -9,17 +9,14 @@ import { MqttProvider } from '../../providers/mqtt/mqtt'
 })
 export class LayoutPage {
 
-  message:string;
+  message: string;
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, private mqttProvider: MqttProvider) {
+  constructor(public navCtrl: NavController, public navParams: NavParams, 
+    private modalCtrl: ModalController, private dispenser:DispensersProvider) {
   }
 
-  ionViewDidLoad() {
-    
-  }
-
-  publish(){
-    if(this.message) this.mqttProvider.publish(this.message);
+  openModal() {
+    this.modalCtrl.create('ControlPage', { id: this.dispenser.dispenser() }).present();
   }
 
 }
