@@ -30,7 +30,8 @@ export class LoginPage {
       let loader = this.loadingCtrl.create({spinner:'crescent'});
       loader.present().then(()=>{
         this.session.auth(this.email, this.password).then((res)=>{
-          this.session.saveSession(this.email).then(()=>{
+          this.session.token = res.token;
+          this.session.saveSession(this.email, res.token).then(()=>{
             this.event.publish('session', this.email);
             this.goHome(loader);
           }).catch((ex)=>{

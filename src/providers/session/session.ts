@@ -6,6 +6,7 @@ import { Storage } from '@ionic/storage';
 export class SessionProvider {
 
   private postAPI: string = 'https://dsd-api.herokuapp.com/api/user/login';
+  token:string = "";
 
   constructor(private http: HttpClient, private storage: Storage) {
 
@@ -23,8 +24,12 @@ export class SessionProvider {
     return this.storage.get('session');
   }
 
-  saveSession(email: string) {
-    return this.storage.set('session', email);
+  saveSession(email: string, token: string) {
+    let session = {
+      'email':email,
+      'token':token
+    }
+    return this.storage.set('session', session);
   }
 
   endSession() {
