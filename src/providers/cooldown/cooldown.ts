@@ -12,6 +12,10 @@ export class CooldownProvider {
     lower:0,
     upper:0
   };
+  private emergencyCoolDownRange:{ lower:number, upper:number} = {
+    lower:5,
+    upper:10
+  };
   private toast:Toast;
 
   constructor(private scheduleProvider: ScheduleProvider, private toastPrvd: ToastProvider) {
@@ -35,9 +39,10 @@ export class CooldownProvider {
     }
   }
 
-  public startCooldown(){
+  public startCooldown(emergency?:boolean){
     this.coolDownStatus = true;
     this.coolDownDuration = this.getRndInteger(this.coolDownRange.lower, this.coolDownRange.upper); //# of seconds for cooldown
+    if(emergency) this.coolDownDuration = this.getRndInteger(this.emergencyCoolDownRange.lower, this.emergencyCoolDownRange.upper);
     this.presentToast('Cool down: ' + this.coolDownDuration + ' seconds remaining', this.coolDownDuration);
   }
 

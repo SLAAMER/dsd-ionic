@@ -31,7 +31,7 @@
             <ion-icon name="stopwatch" item-end></ion-icon>
           </ion-list-header>
           <ion-item>
-            <button ion-button [disabled]="buttonDisabled" (click)="resetCoolDown()" full>Reset</button>
+            <button ion-button [disabled]="buttonDisabled" [disabled]="emergencyStatus" (click)="resetCoolDown()" full>Reset</button>
           </ion-item>
           <ion-list-header>Lower Limit and Upper Limit of Cool Down Time</ion-list-header>
           <ion-item>
@@ -39,7 +39,22 @@
               <ion-badge>{{coolDownProvider.coolDownRange.lower}} sec</ion-badge>
               <ion-badge>{{coolDownProvider.coolDownRange.upper}} sec</ion-badge>
             </ion-label>
-            <ion-range dualKnobs="true" pin="true" [(ngModel)]="coolDownProvider.coolDownRange" color="secondary" min="5" max="300">
+            <ion-range [disabled]="emergencyStatus" dualKnobs="true" pin="true" [(ngModel)]="coolDownProvider.coolDownRange" color="secondary" min="5" max="240">
+              <ion-icon range-left small name="remove"></ion-icon>
+              <ion-icon range-right name="add"></ion-icon>
+            </ion-range>
+          </ion-item>
+          <ion-item>
+            <ion-label>Emergency Switch</ion-label>
+            <ion-toggle [(ngModel)]="emergencyStatus" color="danger"></ion-toggle>
+          </ion-item>
+          <ion-list-header>Lower Limit and Upper Limit of EMERGENCY Cool Down Time</ion-list-header>
+          <ion-item>
+            <ion-label>
+              <ion-badge color="danger">{{coolDownProvider.emergencyCoolDownRange.lower}} sec</ion-badge>
+              <ion-badge color="danger">{{coolDownProvider.emergencyCoolDownRange.upper}} sec</ion-badge>
+            </ion-label>
+            <ion-range [disabled]="!emergencyStatus" dualKnobs="true" pin="true" [(ngModel)]="coolDownProvider.emergencyCoolDownRange" color="danger" min="5" max="10">
               <ion-icon range-left small name="remove"></ion-icon>
               <ion-icon range-right name="add"></ion-icon>
             </ion-range>
@@ -48,8 +63,8 @@
       </ion-col>
       <ion-col col-12 col-sm-12 col-md-6 col-lg-6 col-xl-6>
         <ion-row class="row-header"><ion-col>Dispenser</ion-col><ion-col>Kit</ion-col><ion-col>User</ion-col></ion-row>
-        <ion-list id="output" *ngIf="allResults" [virtualScroll]="allResults" approxItemHeight="40px" class="limit-height"> 
-          <ion-item *virtualItem="let r" class="row-center">
+        <ion-list *ngIf="simulatorProvider.results" class="limit-height"> 
+          <ion-item *ngFor="let r of simulatorProvider.results" class="row-center">
             <ion-row><ion-col>{{r.dispenserId}}</ion-col><ion-col>{{r.kitId}}</ion-col><ion-col>{{r.userId}}</ion-col></ion-row>
           </ion-item>
         </ion-list>

@@ -1,0 +1,42 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title *ngIf="dispenser">{{dispenser.name}}</ion-title>
+    <ion-buttons end>
+      <button ion-button (click)="closeModal()" icon-only>
+        <ion-icon name="close"></ion-icon>
+      </button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+
+  <ion-grid *ngIf="dispenser">
+    <ion-row>
+      <ion-col>Dispenser status:</ion-col>
+      <ion-col>
+        <ion-toggle [checked]="dispenser.active"></ion-toggle>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>{{ dispenser.description }}</ion-col>
+    </ion-row>
+    <ion-row class="row-header">
+      <ion-col>Kit</ion-col>
+      <ion-col>Qty</ion-col>
+      <ion-col>Active</ion-col>
+      <ion-col>Dispense</ion-col>
+    </ion-row>
+    <ion-row *ngFor="let rack of dispenser.racks" class="row-center">
+      <ion-col>{{ rack.kit.name }}</ion-col>
+      <ion-col>{{ rack.quantity }}</ion-col>
+      <ion-col>
+        <ion-toggle [checked]="rack.active"></ion-toggle>
+      </ion-col>
+      <ion-col>
+        <button small ion-button (click)="dispense(dispenser._id,rack.kit._id)" icon-only>
+          <ion-icon name="send"></ion-icon>
+        </button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>

@@ -26,6 +26,7 @@ ion-menu{
     ion-content{
         .scroll-content {
             background-color: white !important;
+            overflow-y: hidden;
         }
     }
 }
