@@ -1,24 +1,24 @@
 <ion-header>
-    <ion-navbar color="primary">
-      <button ion-button menuToggle>
-        <ion-icon name="menu"></ion-icon>
-      </button>
-      <ion-title>Simulator</ion-title>
-      <ion-buttons end>
-        <ion-toggle color="secondary" [(ngModel)]="simulatorStatus"></ion-toggle>
-      </ion-buttons>
-    </ion-navbar>
-    <ion-toolbar color="primary">
-      <ion-segment [(ngModel)]="simulatorContent" color="light">
-        <ion-segment-button value="simulator">
-          <ion-icon name="medkit"></ion-icon>
-        </ion-segment-button>
-        <ion-segment-button value="percentages">
-          <ion-icon name="analytics"></ion-icon>
-        </ion-segment-button>
-      </ion-segment>
-    </ion-toolbar>
-  </ion-header>
+  <ion-navbar color="primary">
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title>Simulator</ion-title>
+    <ion-buttons end>
+      <ion-toggle color="secondary" [(ngModel)]="simulatorStatus"></ion-toggle>
+    </ion-buttons>
+  </ion-navbar>
+  <ion-toolbar color="primary">
+    <ion-segment [(ngModel)]="simulatorContent" color="light">
+      <ion-segment-button value="simulator">
+        <ion-icon name="medkit"></ion-icon>
+      </ion-segment-button>
+      <ion-segment-button value="percentages">
+        <ion-icon name="analytics"></ion-icon>
+      </ion-segment-button>
+    </ion-segment>
+  </ion-toolbar>
+</ion-header>
 
 
 <ion-content id="main" [ngSwitch]="simulatorContent">
@@ -27,11 +27,11 @@
       <ion-col col-12 col-sm-12 col-md-6 col-lg-6 col-xl-6>
         <ion-list>
           <ion-list-header>Reset Active Cool Down to Zero
-            <ion-badge item-end>{{coolDownProvider.coolDownDuration}} sec</ion-badge>  
+            <ion-badge item-end>{{coolDownProvider.coolDownDuration}} sec</ion-badge>
             <ion-icon name="stopwatch" item-end></ion-icon>
           </ion-list-header>
           <ion-item>
-            <button ion-button [disabled]="buttonDisabled" [disabled]="emergencyStatus" (click)="resetCoolDown()" full>Reset</button>
+            <button ion-button [disabled]="buttonDisabled" (click)="resetCoolDown()" full>Reset</button>
           </ion-item>
           <ion-list-header>Lower Limit and Upper Limit of Cool Down Time</ion-list-header>
           <ion-item>
@@ -39,7 +39,8 @@
               <ion-badge>{{coolDownProvider.coolDownRange.lower}} sec</ion-badge>
               <ion-badge>{{coolDownProvider.coolDownRange.upper}} sec</ion-badge>
             </ion-label>
-            <ion-range [disabled]="emergencyStatus" dualKnobs="true" pin="true" [(ngModel)]="coolDownProvider.coolDownRange" color="secondary" min="5" max="240">
+            <ion-range [disabled]="emergencyStatus" dualKnobs="true" pin="true" [(ngModel)]="coolDownProvider.coolDownRange" color="secondary"
+              min="5" max="240">
               <ion-icon range-left small name="remove"></ion-icon>
               <ion-icon range-right name="add"></ion-icon>
             </ion-range>
@@ -54,7 +55,8 @@
               <ion-badge color="danger">{{coolDownProvider.emergencyCoolDownRange.lower}} sec</ion-badge>
               <ion-badge color="danger">{{coolDownProvider.emergencyCoolDownRange.upper}} sec</ion-badge>
             </ion-label>
-            <ion-range [disabled]="!emergencyStatus" dualKnobs="true" pin="true" [(ngModel)]="coolDownProvider.emergencyCoolDownRange" color="danger" min="5" max="10">
+            <ion-range [disabled]="!emergencyStatus" dualKnobs="true" pin="true" [(ngModel)]="coolDownProvider.emergencyCoolDownRange"
+              color="danger" min="5" max="10">
               <ion-icon range-left small name="remove"></ion-icon>
               <ion-icon range-right name="add"></ion-icon>
             </ion-range>
@@ -62,10 +64,18 @@
         </ion-list>
       </ion-col>
       <ion-col col-12 col-sm-12 col-md-6 col-lg-6 col-xl-6>
-        <ion-row class="row-header"><ion-col>Dispenser</ion-col><ion-col>Kit</ion-col><ion-col>User</ion-col></ion-row>
-        <ion-list *ngIf="simulatorProvider.results" class="limit-height"> 
+        <ion-row class="row-header">
+          <ion-col>Dispenser</ion-col>
+          <ion-col>Kit</ion-col>
+          <ion-col>User</ion-col>
+        </ion-row>
+        <ion-list *ngIf="simulatorProvider.results" class="limit-height">
           <ion-item *ngFor="let r of simulatorProvider.results" class="row-center">
-            <ion-row><ion-col>{{r.dispenserId}}</ion-col><ion-col>{{r.kitId}}</ion-col><ion-col>{{r.userId}}</ion-col></ion-row>
+            <ion-row>
+              <ion-col>{{r.dispenserName}}</ion-col>
+              <ion-col>{{r.kitName}}</ion-col>
+              <ion-col>{{r.userName}}</ion-col>
+            </ion-row>
           </ion-item>
         </ion-list>
       </ion-col>
@@ -73,7 +83,40 @@
   </ion-grid>
 
   <ion-grid *ngSwitchCase="'percentages'">
-    <ion-footer>
-    </ion-footer>
+    <ion-list *ngIf="dispensers">
+      <ion-item *ngFor="let d of dispensers" class="row-center">
+        <ion-item-divider color="light">
+          <ion-grid>
+            <ion-row>
+              <ion-col>
+                {{d.name}}
+              </ion-col>
+              <ion-col>
+                {{d.probability}} %
+              </ion-col>
+            </ion-row>
+          </ion-grid>
+        </ion-item-divider>
+        <div *ngFor="let r of d.racks">
+          <ion-grid>
+            <ion-row>
+              <ion-col>
+                {{r.kit.name}}
+              </ion-col>
+              <ion-col>
+                <ion-item>
+                  <ion-input type="number" [placeholder]="r.kit.probability"></ion-input>
+                </ion-item>
+              </ion-col>
+            </ion-row>
+          </ion-grid>
+        </div>
+      </ion-item>
+    </ion-list>
+    <ion-fab top right>
+      <button ion-fab (click)="save()">
+        <ion-icon name="done-all"></ion-icon>
+      </button>
+    </ion-fab>
   </ion-grid>
 </ion-content>

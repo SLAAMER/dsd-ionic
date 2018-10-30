@@ -1,183 +1,68 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { SessionProvider } from '../session/session';
 
 @Injectable()
 export class DispensersProvider {
 
-  constructor(public http: HttpClient) {
+  private api: string = "https://dsd-api.herokuapp.com/api/dispenser/";
+  private kitMod: string = "?kits=1";
+
+  private dispenseAPI: string = "https://dsd-api.herokuapp.com/api/dispenser/dispense/kit";
+
+  constructor(private http: HttpClient, private session: SessionProvider) {
 
   }
 
-  getDispensers(){
-    return [{
-      "dispenserId": "D1",
-      "probability": 20,
-      "kits": [{
-          "kitId": "K1",
-          "probability": 50
-        },
-        {
-          "kitId": "K2",
-          "probability": 75
-        },
-        {
-          "kitId": "K3",
-          "probability": 90
-        },
-        {
-          "kitId": "K4",
-          "probability": 100
-        }
-      ],
-      "users": [{
-          "userId": "U1",
-          "probability": 10
-        },
-        {
-          "userId": "U2",
-          "probability": 25
-        },
-        {
-          "userId": "U3",
-          "probability": 69
-        },
-        {
-          "userId": "U4",
-          "probability": 99
-        },
-        {
-          "userId": "U5",
-          "probability": 100
-        }
-      ]
-    },
-    {
-      "dispenserId": "D2",
-      "probability": 50,
-      "kits": [{
-          "kitId": "K1",
-          "probability": 50
-        },
-        {
-          "kitId": "K2",
-          "probability": 75
-        },
-        {
-          "kitId": "K3",
-          "probability": 90
-        },
-        {
-          "kitId": "K4",
-          "probability": 100
-        }
-      ],
-      "users": [{
-          "userId": "U1",
-          "probability": 10
-        },
-        {
-          "userId": "U2",
-          "probability": 25
-        },
-        {
-          "userId": "U3",
-          "probability": 80
-        },
-        {
-          "userId": "U4",
-          "probability": 99
-        },
-        {
-          "userId": "U4",
-          "probability": 100
-        }
-      ]
-    },
-    {
-      "dispenserId": "D3",
-      "probability": 60,
-      "kits": [{
-          "kitId": "K1",
-          "probability": 50
-        },
-        {
-          "kitId": "K2",
-          "probability": 75
-        },
-        {
-          "kitId": "K3",
-          "probability": 90
-        },
-        {
-          "kitId": "K4",
-          "probability": 100
-        }
-      ],
-      "users": [{
-          "userId": "U1",
-          "probability": 10
-        },
-        {
-          "userId": "U2",
-          "probability": 25
-        },
-        {
-          "userId": "U3",
-          "probability": 80
-        },
-        {
-          "userId": "U4",
-          "probability": 99
-        },
-        {
-          "userId": "U4",
-          "probability": 100
-        }
-      ]
-    },
-    {
-      "dispenserId": "D4",
-      "probability": 100,
-      "kits": [{
-          "kitId": "K1",
-          "probability": 50
-        },
-        {
-          "kitId": "K2",
-          "probability": 75
-        },
-        {
-          "kitId": "K3",
-          "probability": 90
-        },
-        {
-          "kitId": "K4",
-          "probability": 100
-        }
-      ],
-      "users": [{
-          "userId": "U1",
-          "probability": 10
-        },
-        {
-          "userId": "U2",
-          "probability": 25
-        },
-        {
-          "userId": "U3",
-          "probability": 80
-        },
-        {
-          "userId": "U4",
-          "probability": 99
-        },
-        {
-          "userId": "U4",
-          "probability": 100
-        }
-      ]
+  dispenser(): string {
+    return "5b67c60be458c21b124a1882";
+  }
+
+  dispense(dispenserId, kitId, token?): Promise<any> {
+    var options = {};
+    if(token){
+      options = {
+        headers: new HttpHeaders({
+          'Authorization':token
+        })
+      };
+
     }
-  ];
-  
+    else{
+      options = {
+        headers: new HttpHeaders({
+          'Authorization':this.session.token
+        })
+      };
+    }
+    let body = {
+      'dispenser':dispenserId,
+      'kit': kitId
+    };
+    console.log(options);
+    
+    return this.http.post(this.dispenseAPI,body,options).toPromise();
   }
+
+  getUsers() {
+    let op = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/x-www-form-urlencoded'
+      })
+    };
+    return this.http.get("https://dsd-api.herokuapp.com/api/simulator/bots-army", op).toPromise();
+  }
+
+  getStaticDispenser():Promise<any>{
+    return this.http.get('https://dsd-api.herokuapp.com/api/dispenser/search?name=UTT - Vinculación - Enfermería').toPromise();
+  }
+
+  getDispenser(id: string): Promise<any> {
+    return this.http.get(this.api + id + this.kitMod).toPromise();
+  }
+
+  getDispensers() {
+    return this.http.get(this.api + this.kitMod).toPromise();
+  }
+
 }
