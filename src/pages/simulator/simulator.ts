@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, LoadingController } from 'ionic-angular';
 import { DispensersProvider } from '../../providers/dispensers/dispensers';
 import { CooldownProvider } from '../../providers/cooldown/cooldown';
 import { SimulatorProvider } from '../../providers/simulator/simulator';
-
+import { SessionProvider } from '../../providers/session/session';
 @IonicPage()
 @Component({
   selector: 'page-simulator',
@@ -14,17 +14,38 @@ export class SimulatorPage {
   private emergencyDuration: number;
   private emergencyStatus: boolean = false;
   private simulatorStatus: boolean = false;
-  private dispensers: any;
+  private dispensers: any = [];
+  private users: any = [];
 
   private buttonDisabled: boolean = false;
   private simulatorContent: string = "simulator";
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, private dispProvider: DispensersProvider, 
-    private coolDownProvider: CooldownProvider, private simulatorProvider: SimulatorProvider) {
+  constructor(public navCtrl: NavController, public navParams: NavParams, private dispProvider: DispensersProvider,
+    private coolDownProvider: CooldownProvider, private simulatorProvider: SimulatorProvider, private loadCtrl: LoadingController,
+    private session: SessionProvider) {
   }
 
   ionViewDidEnter() {
-    this.dispensers = this.dispProvider.getDispensers();
+    let loader = this.loadCtrl.create({ spinner: 'crescent', content: 'Getting your dispensers and users' });
+    loader.present().then(() => {
+      this.dispProvider.getDispensers().then((res) => {
+
+        this.dispensers = res;
+        console.log(this.dispensers);
+        
+        this.dispProvider.getUsers().then((res) => {
+          this.users = res;
+          console.log(this.users);
+          
+          loader.dismiss();
+        }).catch((err) => {
+          loader.dismiss();
+        });
+      }).catch((err) => {
+        console.log(err);
+        loader.dismiss();
+      });
+    });
   }
 
   ionViewDidLoad() {
@@ -58,7 +79,6 @@ export class SimulatorPage {
           var chosenKit = [];
           var chosenUser = [];
           let numOfDispensers = this.getRndInteger(1, this.dispensers.length); //# of dispensers that will generate a use
-
           for (let i = 0; i < numOfDispensers; i++) { //for each dispenser
             let d = this.getRndInteger(1, 100); //find which one
             for (let x = 0; x < this.dispensers.length; x++) { //checks out the dispensers' probability
@@ -69,30 +89,67 @@ export class SimulatorPage {
             }
           }
           chosenDispensers.forEach(element => {
-            let k = this.getRndInteger(1, 100);
+            let k = this.getRndInteger(1, 99);
             let u = this.getRndInteger(1, 100);
-
-            element.kits.forEach(kit => {
+            let prev = 0
+            for (let i = 0; i < element.racks.length; i++) {
+              let rack = element.racks[i];
+              let kit = rack.kit;
+              kit.probability = prev + 33;
+              prev += 33;
               if (k <= kit.probability) {
                 chosenKit.push(kit);
                 k = 101;
               }
-            });
-            element.users.forEach(user => {
+            }
+
+            /*element.racks.forEach(rack => {
+              let kit = rack.kit;
+              if (k <= kit.probability) {
+                chosenKit.push(kit);
+                k = 101;
+              }
+            });*/
+            this.users.forEach(user => {
               if (u <= user.probability) {
                 chosenUser.push(user);
                 u = 101;
               }
             });
           });
+          // console.log(chosenDispensers);
+          // console.log(chosenKit);
+          // console.log(chosenUser);
 
           for (let i = 0; i < chosenDispensers.length; i++) {
             let obj = {
-              "dispenserId": chosenDispensers[i].dispenserId,
-              "kitId": chosenKit[i].kitId,
-              "userId": chosenUser[i].userId
+              "dispenserId": chosenDispensers[i]._id,
+              "dispenserName": chosenDispensers[i].name,
+              "kitId": chosenKit[i]._id,
+              "kitName": chosenKit[i].name,
+              "userId": chosenUser[i]._id,
+              "userName": chosenUser[i].name,
+              "userEmail": chosenUser[i].email
             }
             this.simulatorProvider.add(obj);
+            //console.log(obj);
+            
+            this.session.auth(obj.userEmail, 'aloo123455').then((res) => {
+              console.log(res);
+              /**
+               * DISPENSE
+               */
+              this.dispProvider.dispense(obj.dispenserId, obj.kitId, res.token).then((res) => {
+                console.log(res);
+
+              }).catch((err) => {
+                console.log(err);
+
+              });
+            }).catch((err) => {
+              console.log(err);
+
+            });
           }
           this.coolDownProvider.startCooldown(this.emergencyStatus);
         }

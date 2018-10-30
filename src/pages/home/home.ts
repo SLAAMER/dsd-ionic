@@ -33,7 +33,7 @@ export class HomePage {
   }
 
   ionViewDidEnter() {
-    this.loadSplineChart();
+    //this.loadSplineChart();
     //this.loadLineChart();
     this.loadGaugeChart1();
     this.loadGaugeChart2();
